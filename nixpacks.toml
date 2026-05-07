@@ -1,3 +1,6 @@
+[nixpkgs]
+archive = "ed67bc86e84e51d4a88e73c7fd36006dc876476f"
+
 [phases.setup]
 nixPkgs = ["jdk17", "nodejs_22", "maven"]
 
