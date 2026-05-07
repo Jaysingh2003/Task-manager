@@ -81,38 +81,7 @@
   <build>
     <plugins>
 
-      <!-- Step 1: Install frontend npm dependencies -->
-      <plugin>
-        <groupId>com.github.eirslett</groupId>
-        <artifactId>frontend-maven-plugin</artifactId>
-        <version>1.15.0</version>
-        <configuration>
-          <workingDirectory>../frontend</workingDirectory>
-          <nodeVersion>v20.11.0</nodeVersion>
-        </configuration>
-        <executions>
-          <execution>
-            <id>install-node-and-npm</id>
-            <phase>prepare-package</phase>
-            <goals><goal>install-node-and-npm</goal></goals>
-          </execution>
-          <execution>
-            <id>npm-install</id>
-            <phase>prepare-package</phase>
-            <goals><goal>npm</goal></goals>
-            <configuration><arguments>install</arguments></configuration>
-          </execution>
-          <!-- Step 2: Build React - outputs to backend/src/main/resources/static -->
-          <execution>
-            <id>npm-build</id>
-            <phase>prepare-package</phase>
-            <goals><goal>npm</goal></goals>
-            <configuration><arguments>run build</arguments></configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <!-- Step 3: Package everything into one JAR -->
+      <!-- Package into one JAR -->
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
