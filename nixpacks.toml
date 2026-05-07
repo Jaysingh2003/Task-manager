@@ -1,11 +1,10 @@
-[nixpkgs]
-archive = "50ab793786d9de88ee30ec4e4c24fb4236fc2674"
-
 [phases.setup]
-nixPkgs = ["jdk17", "nodejs_22", "maven"]
+nixPkgs = ["jdk17", "maven", "curl", "bash"]
 
 [phases.build]
 cmds = [
+  "curl -fsSL https://deb.nodesource.com/setup_22.x | bash -",
+  "apt-get install -y nodejs",
   "cd frontend && npm install && npm run build",
   "cd backend && mvn package -DskipTests"
 ]
