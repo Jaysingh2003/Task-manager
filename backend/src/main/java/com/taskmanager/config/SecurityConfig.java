@@ -18,7 +18,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.List;
 
 @Configuration
-@EnableMethodSecurity   // enables @PreAuthorize on controllers
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -27,12 +27,22 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())           // REST APIs don't need CSRF
+            .csrf(csrf -> csrf.disable())
             .cors(cors -> cors.configurationSource(corsSource()))
-            .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // no sessions - JWT only
+            .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
+                // Public auth endpoints
                 .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/", "/index.html", "/assets/**", "/*.js", "/*.css", "/*.svg", "/*.ico").permitAll()
+                // Allow ALL static frontend files - fixes 403 on browser
+                .requestMatchers(
+                    "/", "/index.html",
+                    "/assets/**",
+                    "/favicon.svg", "/favicon.ico",
+                    "/*.js", "/*.css", "/*.svg", "/*.png",
+                    // React Router paths - all go to index.html
+                    "/login", "/signup", "/dashboard", "/projects", "/tasks"
+                ).permitAll()
+                // Everything else needs JWT
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
@@ -42,7 +52,7 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); // hashes passwords - never store plain text
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
